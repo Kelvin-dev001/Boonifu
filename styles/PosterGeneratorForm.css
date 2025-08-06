@@ -1,0 +1,249 @@
+/* Poster Generator Form Modal Styles */
+
+.poster-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.poster-modal {
+  background: #fff;
+  border-radius: 1.25rem;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.13), 0 1.5px 10px rgba(0,0,0,0.07);
+  width: 100%;
+  max-width: 440px;
+  margin: 2rem auto;
+  position: relative;
+  padding: 0;
+  outline: none;
+  border: 1.5px solid #FFC966; /* boonifu gold */
+  animation: modal-in 0.5s cubic-bezier(0.39, 0.58, 0.57, 1) both;
+}
+@keyframes modal-in {
+  0% { opacity: 0; transform: translateY(60px) scale(0.98);}
+  100% { opacity: 1; transform: translateY(0) scale(1);}
+}
+
+.poster-modal .close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 20;
+  background: #f5f5f5;
+  color: #333;
+  border: none;
+  border-radius: 9999px;
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: 1.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.poster-modal .close-btn:hover {
+  background: #FFC966;
+  color: #fff;
+}
+
+.poster-modal .poster-modal-header {
+  text-align: center;
+  margin-bottom: 0.6rem;
+}
+
+.poster-modal .poster-modal-header h2 {
+  font-size: 1.45rem;
+  font-weight: bold;
+  color: #FF8A00; /* boonifu orange */
+  margin-bottom: 0.3rem;
+  font-family: 'Quicksand', 'Poppins', sans-serif;
+}
+
+.poster-modal .poster-modal-header p {
+  color: #253858;
+  margin-bottom: 1.4rem;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.poster-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.poster-modal label {
+  font-weight: 500;
+  color: #253858;
+  margin-bottom: 0.2rem;
+  font-size: 1rem;
+}
+
+.poster-modal input[type="text"],
+.poster-modal input[type="file"],
+.poster-modal textarea,
+.poster-modal select {
+  width: 100%;
+  padding: 0.55rem 0.9rem;
+  border: 1.4px solid #ddd;
+  border-radius: 0.6rem;
+  font-size: 1rem;
+  font-family: inherit;
+  background: #fff;
+  margin-top: 0.25rem;
+  transition: border 0.2s;
+  box-shadow: 0 0.5px 2px rgba(0,0,0,0.03);
+}
+
+.poster-modal input[type="text"]:focus,
+.poster-modal textarea:focus,
+.poster-modal select:focus {
+  border-color: #FFC966; /* boonifu gold */
+  outline: none;
+  background: #fef7ec;
+}
+
+.poster-modal textarea {
+  resize: none;
+  min-height: 60px;
+  max-height: 180px;
+}
+
+.poster-modal .input-error {
+  border-color: #F87171 !important;
+  background: #fff6f6;
+}
+
+.poster-modal .error-message {
+  color: #f87171;
+  font-size: 0.96rem;
+  margin-top: 0.15rem;
+}
+
+.poster-modal .char-count {
+  color: #94A3B8;
+  font-size: 0.9rem;
+  float: right;
+  margin-top: 0.08rem;
+}
+
+.poster-modal .selected-logo {
+  margin-top: 0.3rem;
+  font-size: 0.98rem;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+.poster-modal .selected-logo .remove-logo {
+  background: #f3f4f6;
+  color: #F87171;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.13rem 0.7rem;
+  font-size: 0.9rem;
+  margin-left: 0.1rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.poster-modal .selected-logo .remove-logo:hover {
+  background: #FECACA;
+}
+
+.poster-modal .api-error {
+  color: #b91c1c;
+  background: #FFF1F2;
+  border: 1px solid #FECACA;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.poster-modal .form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-top: 0.6rem;
+}
+
+.poster-modal .form-actions button,
+.poster-modal .form-actions a {
+  padding: 0.7rem 2.1rem;
+  font-size: 1.07rem;
+  font-weight: 600;
+  border-radius: 0.7rem;
+  border: none;
+  background: #FFC966;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.17s, color 0.17s;
+  box-shadow: 0 1.5px 10px rgba(0,0,0,0.08);
+}
+.poster-modal .form-actions button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+.poster-modal .form-actions button:hover,
+.poster-modal .form-actions a:hover {
+  background: #FF8A00;
+  color: #fff;
+}
+
+.poster-modal .poster-output {
+  text-align: center;
+  margin-top: 1.2rem;
+}
+
+.poster-modal .poster-output img {
+  width: 100%;
+  max-width: 340px;
+  max-height: 420px;
+  object-fit: contain;
+  border-radius: 1rem;
+  box-shadow: 0 1.5px 10px rgba(0,0,0,0.06);
+  margin: 0 auto;
+}
+
+.poster-modal .poster-output-actions {
+  display: flex;
+  gap: 0.7rem;
+  justify-content: center;
+  margin-top: 1.3rem;
+}
+
+.poster-modal .poster-output-actions a,
+.poster-modal .poster-output-actions button {
+  padding: 0.55rem 1.6rem;
+  border-radius: 0.5rem;
+  background: #FFC966;
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  font-size: 1.02rem;
+  cursor: pointer;
+  transition: background 0.17s, color 0.17s;
+}
+.poster-modal .poster-output-actions a:hover,
+.poster-modal .poster-output-actions button:hover {
+  background: #FF8A00;
+  color: #fff;
+}
+
+@media (max-width: 580px) {
+  .poster-modal {
+    padding: 0 0 0.5rem 0;
+    border-radius: 0.9rem;
+  }
+  .poster-modal .poster-modal-header h2 {
+    font-size: 1.08rem;
+  }
+}

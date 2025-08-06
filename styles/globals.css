@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Quicksand:wght@400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Make Poppins the default, and Quicksand for headings */
+body {
+  font-family: 'Poppins', 'Quicksand', sans-serif;
+}
+h1, h2, h3, h4, h5 {
+  font-family: 'Quicksand', 'Poppins', sans-serif;
+}

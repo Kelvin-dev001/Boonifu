@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* Make Poppins the default, and Quicksand for headings */
+body {
+  font-family: var(--font-poppins), sans-serif;
+}
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-quicksand), var(--font-poppins), sans-serif;
+}
