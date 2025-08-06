@@ -1,5 +1,6 @@
 const OpenAI = require("openai");
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY }); // Use env variable instead
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
 (async () => {
   try {
     const models = await openai.models.list();
