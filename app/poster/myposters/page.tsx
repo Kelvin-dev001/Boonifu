@@ -1,4 +1,4 @@
-import MyPostersGallery from "../../components/MyPostersGallery";
+import MyPostersGallery from "../../../components/MyPostersGallery";
 
 export default function MyPostersPage() {
   return (
