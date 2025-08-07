@@ -7,12 +7,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { generatePosterImage, PosterFormData } from "../utils/promptEngine";
 import { savePosterToFirestore } from "../utils/savePosterToFirestore";
 import { useFirebaseAuth } from "../hooks/useFirebaseAuth";
-import { uploadLogoToStorage } from "../utils/uploadLogoToStorage"; // <-- Import this utility!
-
-// --- TYPES ---
-type PosterGeneratorFormProps = {
-  onClose: () => void;
-};
+import { uploadLogoToStorage } from "../utils/uploadLogoToStorage";
 
 const vibes = [
   "Fun & Colorful",
@@ -26,12 +21,13 @@ const vibes = [
 
 const MAX_LOGO_SIZE_MB = 2;
 const ACCEPTED_LOGO_TYPES = ["image/png", "image/jpeg", "image/svg+xml"];
-
-// --- Google reCAPTCHA Site Key (replace with your own) ---
 const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "";
 
-export default function PosterGeneratorForm({ onClose }: PosterGeneratorFormProps) {
-  // --- STATE ---
+export default function PosterGeneratorForm() {
+  // Modal open/close state
+  const [open, setOpen] = useState(true);
+
+  // Form states
   const [form, setForm] = useState<PosterFormData>({
     business: "",
     message: "",
@@ -51,20 +47,20 @@ export default function PosterGeneratorForm({ onClose }: PosterGeneratorFormProp
 
   const { user } = useFirebaseAuth();
 
-  // --- ESCAPE/OVERLAY CLOSE ---
+  // ESCAPE/OVERLAY CLOSE
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") setOpen(false);
     }
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [onClose]);
+  }, []);
 
   function handleOverlayClick(e: React.MouseEvent<HTMLDivElement>) {
-    if (e.target === e.currentTarget) onClose();
+    if (e.target === e.currentTarget) setOpen(false);
   }
 
-  // --- VALIDATION ---
+  // VALIDATION
   function validate() {
     const errs: Record<string, string> = {};
     if (!form.business.trim()) errs.business = "Business type/location is required.";
@@ -85,14 +81,13 @@ export default function PosterGeneratorForm({ onClose }: PosterGeneratorFormProp
     return errs;
   }
 
-  // --- SUBMIT ---
+  // SUBMIT
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErrors({});
     setApiError(null);
     setPosterUrl(null);
 
-    // Validate
     const errs = validate();
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
@@ -104,7 +99,6 @@ export default function PosterGeneratorForm({ onClose }: PosterGeneratorFormProp
 
     setLoading(true);
 
-    // Analytics hook: Conversion start
     if (typeof window !== "undefined" && (window as any).gtag) {
       (window as any).gtag("event", "poster_generation_started", {
         event_category: "Poster",
@@ -113,31 +107,29 @@ export default function PosterGeneratorForm({ onClose }: PosterGeneratorFormProp
     }
 
     try {
-      // --- UPLOAD LOGO TO STORAGE (if present) ---
+      // UPLOAD LOGO TO STORAGE (if present)
       let logoUrl: string | null = null;
       if (form.logo && user) {
         logoUrl = await uploadLogoToStorage(form.logo, user.uid);
       }
 
-      // Use promptEngine logic, add logoUrl to form if needed by API
+      // Generate poster image
       const { imageUrl } = await generatePosterImage(
-        { ...form, logoUrl }, // Pass logo URL if you want to use it in image generation
+        { ...form, logoUrl },
         recaptchaToken || undefined
       );
       setPosterUrl(imageUrl);
       setImgLoading(true);
 
-      // --- SAVE TO FIRESTORE ---
-      try {
-        if (user) {
+      // SAVE TO FIRESTORE
+      if (user) {
+        try {
           await savePosterToFirestore({ user, form: { ...form, logoUrl }, imageUrl });
+        } catch (saveError) {
+          console.error("Error saving poster to Firestore:", saveError);
         }
-      } catch (saveError) {
-        // Save error is not fatal for the user experience
-        console.error("Error saving poster to Firestore:", saveError);
       }
 
-      // Analytics hook: Conversion success
       if (typeof window !== "undefined" && (window as any).gtag) {
         (window as any).gtag("event", "poster_generation_success", {
           event_category: "Poster",
@@ -149,7 +141,6 @@ export default function PosterGeneratorForm({ onClose }: PosterGeneratorFormProp
     } catch (err: any) {
       setApiError(err.message || "Something went wrong.");
       toast.error(err.message || "Something went wrong.");
-      // Analytics hook: Conversion error
       if (typeof window !== "undefined" && (window as any).gtag) {
         (window as any).gtag("event", "poster_generation_error", {
           event_category: "Poster",
@@ -161,7 +152,7 @@ export default function PosterGeneratorForm({ onClose }: PosterGeneratorFormProp
     }
   }
 
-  // --- FIELD HANDLERS ---
+  // FIELD HANDLERS
   function handleChange(
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -203,7 +194,6 @@ export default function PosterGeneratorForm({ onClose }: PosterGeneratorFormProp
     }, 110);
   }
 
-  // --- FOCUS ON OPEN ---
   useEffect(() => {
     if (formRef.current) {
       const firstInput = formRef.current.querySelector("input,select,textarea") as HTMLElement;
@@ -211,19 +201,18 @@ export default function PosterGeneratorForm({ onClose }: PosterGeneratorFormProp
     }
   }, []);
 
-  // --- IMAGE SKELETON LOADER ---
   function handleImgLoad() {
     setImgLoading(false);
   }
 
-  // --- SCROLL TO FORM ON RESULT ---
   useEffect(() => {
     if (posterUrl && formRef.current) {
       formRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [posterUrl]);
 
-  // --- UI ---
+  if (!open) return null;
+
   return (
     <>
       <Toaster position="top-center" />
@@ -251,7 +240,7 @@ export default function PosterGeneratorForm({ onClose }: PosterGeneratorFormProp
             {/* Close Button */}
             <button
               className="absolute top-3 right-3 z-30 bg-gray-100 hover:bg-boonifu-gold hover:text-white rounded-full p-2 transition focus:outline-none focus:ring-2 focus:ring-boonifu-gold"
-              onClick={onClose}
+              onClick={() => setOpen(false)}
               aria-label="Close poster generator"
               type="button"
               tabIndex={0}
@@ -518,7 +507,7 @@ export default function PosterGeneratorForm({ onClose }: PosterGeneratorFormProp
                     </button>
                     <button
                       type="button"
-                      onClick={onClose}
+                      onClick={() => setOpen(false)}
                       className="text-red-500 hover:underline font-medium"
                     >
                       Close
