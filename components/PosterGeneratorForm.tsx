@@ -46,7 +46,7 @@ export default function PosterGeneratorForm({ onClose }: PosterGeneratorFormProp
   const [imgLoading, setImgLoading] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const recaptchaRef = useRef<any>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
   const { user } = useFirebaseAuth();
