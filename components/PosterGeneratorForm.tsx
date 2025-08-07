@@ -406,7 +406,7 @@ export default function PosterGeneratorForm({ onClose }: PosterGeneratorFormProp
                         <ReCAPTCHA
                           ref={recaptchaRef}
                           sitekey={RECAPTCHA_SITE_KEY}
-                          onChange={token => setRecaptchaToken(token)}
+                          onChange={(token: string | null) => setRecaptchaToken(token)}
                           theme="light"
                           className="mt-2"
                         />
