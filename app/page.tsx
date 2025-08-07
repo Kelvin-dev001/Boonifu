@@ -36,7 +36,7 @@ export default function Home() {
       </div>
       {/* Modal for Poster Generator Form */}
       {showPosterForm && (
-        <PosterGeneratorForm onClose={() => setShowPosterForm(false)} />
+        <PosterGeneratorForm />
       )}
     </>
   );
