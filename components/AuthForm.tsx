@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation"; // <-- Import useRouter
 import { useFirebaseAuth } from "../hooks/useFirebaseAuth";
 
 type AuthFormProps = {
@@ -8,6 +9,7 @@ type AuthFormProps = {
 };
 
 export default function AuthForm({ mode, onSwitchMode }: AuthFormProps) {
+  const router = useRouter(); // <-- Initialize router
   const { login, signup, error, loading, loginWithGoogle, resetPassword } = useFirebaseAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,6 +29,7 @@ export default function AuthForm({ mode, onSwitchMode }: AuthFormProps) {
       } else {
         await signup(email, password);
       }
+      router.push("/poster"); // <-- Redirect to poster creation page
     } catch (err: any) {
       setFormError(err.message);
     } finally {
@@ -39,6 +42,7 @@ export default function AuthForm({ mode, onSwitchMode }: AuthFormProps) {
     setSubmitting(true);
     try {
       await loginWithGoogle();
+      router.push("/poster"); // <-- Redirect to poster creation page
     } catch (err: any) {
       setFormError(err.message);
     } finally {
