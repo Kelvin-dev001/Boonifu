@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import toast, { Toaster } from "react-hot-toast";
-import ReCAPTCHA from "react-google-recaptcha";
+// REMOVE: import ReCAPTCHA from "react-google-recaptcha";
 import { generatePosterImage, PosterFormData } from "../utils/promptEngine";
 import { savePosterToFirestore } from "../utils/savePosterToFirestore";
 import { useFirebaseAuth } from "../hooks/useFirebaseAuth";
@@ -21,13 +21,11 @@ const vibes = [
 
 const MAX_LOGO_SIZE_MB = 2;
 const ACCEPTED_LOGO_TYPES = ["image/png", "image/jpeg", "image/svg+xml"];
-const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "";
+// REMOVE: const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "";
 
 export default function PosterGeneratorForm() {
-  // Modal open/close state
   const [open, setOpen] = useState(true);
 
-  // Form states
   const [form, setForm] = useState<PosterFormData>({
     business: "",
     message: "",
@@ -38,16 +36,15 @@ export default function PosterGeneratorForm() {
   const [loading, setLoading] = useState(false);
   const [posterUrl, setPosterUrl] = useState<string | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
-  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  // REMOVE: const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
   const [imgLoading, setImgLoading] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const recaptchaRef = useRef<any>(null);
+  // REMOVE: const recaptchaRef = useRef<any>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
   const { user } = useFirebaseAuth();
 
-  // ESCAPE/OVERLAY CLOSE
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);
@@ -60,7 +57,6 @@ export default function PosterGeneratorForm() {
     if (e.target === e.currentTarget) setOpen(false);
   }
 
-  // VALIDATION
   function validate() {
     const errs: Record<string, string> = {};
     if (!form.business.trim()) errs.business = "Business type/location is required.";
@@ -75,13 +71,10 @@ export default function PosterGeneratorForm() {
         errs.logo = `Logo must be smaller than ${MAX_LOGO_SIZE_MB} MB.`;
       }
     }
-    if (!recaptchaToken) {
-      errs.recaptcha = "Please verify that you are not a robot.";
-    }
+    // REMOVE: if (!recaptchaToken) { errs.recaptcha = "Please verify that you are not a robot."; }
     return errs;
   }
 
-  // SUBMIT
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErrors({});
@@ -92,7 +85,7 @@ export default function PosterGeneratorForm() {
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
       if (errs.logo) toast.error(errs.logo);
-      if (errs.recaptcha) toast.error(errs.recaptcha);
+      // REMOVE: if (errs.recaptcha) toast.error(errs.recaptcha);
       if (errs.business || errs.message || errs.vibe) toast.error("Please fill all required fields.");
       return;
     }
@@ -107,21 +100,16 @@ export default function PosterGeneratorForm() {
     }
 
     try {
-      // UPLOAD LOGO TO STORAGE (if present)
       let logoUrl: string | null = null;
       if (form.logo && user) {
         logoUrl = await uploadLogoToStorage(form.logo, user.uid);
       }
 
-      // Generate poster image
-      const { imageUrl } = await generatePosterImage(
-        { ...form, logoUrl },
-        recaptchaToken || undefined
-      );
+      // REMOVE recaptchaToken from arguments
+      const { imageUrl } = await generatePosterImage({ ...form, logoUrl });
       setPosterUrl(imageUrl);
       setImgLoading(true);
 
-      // SAVE TO FIRESTORE
       if (user) {
         try {
           await savePosterToFirestore({ user, form: { ...form, logoUrl }, imageUrl });
@@ -152,7 +140,6 @@ export default function PosterGeneratorForm() {
     }
   }
 
-  // FIELD HANDLERS
   function handleChange(
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -186,9 +173,9 @@ export default function PosterGeneratorForm() {
     setErrors({});
     setPosterUrl(null);
     setApiError(null);
-    setRecaptchaToken(null);
+    // REMOVE: setRecaptchaToken(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
-    if (recaptchaRef.current) recaptchaRef.current.reset();
+    // REMOVE: if (recaptchaRef.current) recaptchaRef.current.reset();
     setTimeout(() => {
       formRef.current?.scrollIntoView({ behavior: "smooth" });
     }, 110);
@@ -389,25 +376,7 @@ export default function PosterGeneratorForm() {
                         <div className="text-red-600 text-sm mt-1">{errors.logo}</div>
                       )}
                     </div>
-                    {/* reCAPTCHA */}
-                    <div>
-                      {RECAPTCHA_SITE_KEY ? (
-                        <ReCAPTCHA
-                          ref={recaptchaRef}
-                          sitekey={RECAPTCHA_SITE_KEY}
-                          onChange={(token: string | null) => setRecaptchaToken(token)}
-                          theme="light"
-                          className="mt-2"
-                        />
-                      ) : (
-                        <div className="text-yellow-700 bg-yellow-50 p-2 rounded text-sm">
-                          reCAPTCHA not configured. Set <code>NEXT_PUBLIC_RECAPTCHA_SITE_KEY</code> in your environment.
-                        </div>
-                      )}
-                      {errors.recaptcha && (
-                        <div className="text-red-600 text-sm mt-1">{errors.recaptcha}</div>
-                      )}
-                    </div>
+                    {/* REMOVE reCAPTCHA SECTION */}
                     {/* API Error */}
                     {apiError && (
                       <motion.div
