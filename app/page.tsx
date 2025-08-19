@@ -1,43 +1,15 @@
 "use client";
-import { useState } from "react";
-import Head from "next/head";
-import Navbar from "../components/Navbar";
-import HeroSection from "../components/HeroSection";
-import HowItWorks from "../components/HowItWorks";
-import Gallery from "../components/Gallery";
-import WhyBoonifu from "../components/WhyBoonifu";
-import FAQSection from "../components/FAQSection";
-import Footer from "../components/Footer";
-import PosterGeneratorForm from "../components/PosterGeneratorForm";
+import Link from "next/link";
 
 export default function Home() {
-  const [showPosterForm, setShowPosterForm] = useState(false);
-
   return (
-    <>
-      <Head>
-        <title>Boonifu – Instant Posters for Small and Medium Businesses in Africa</title>
-        <meta
-          name="description"
-          content="Effortlessly create beautiful posters and social media designs for your African business using AI. Pay via M-Pesa. Try Boonifu now!"
-        />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
-      <div className="flex flex-col min-h-screen bg-gradient-to-br from-boonifu-light to-white font-poppins">
-        <Navbar />
-        <main className="flex-1">
-          <HeroSection onCreatePosterClick={() => setShowPosterForm(true)} />
-          <HowItWorks />
-          <Gallery />
-          <WhyBoonifu />
-          <FAQSection />
-        </main>
-        <Footer />
-      </div>
-      {/* Modal for Poster Generator Form */}
-      {showPosterForm && (
-        <PosterGeneratorForm />
-      )}
-    </>
+    <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+      <h1 className="text-3xl font-bold mb-4 text-center">Welcome to Boonifu Poster Builder</h1>
+      <p className="mb-6 text-lg text-center">Effortlessly create beautiful posters for your business.</p>
+      <Link href="/generate" className="bg-boonifu-gold text-white px-6 py-2 rounded-lg font-bold hover:bg-boonifu-orange transition">
+        Start Creating
+      </Link>
+      <div className="mt-10 text-sm text-gray-400">Sprint 1 MVP Demo</div>
+    </main>
   );
 }
