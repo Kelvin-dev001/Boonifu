@@ -1,5 +1,6 @@
 import { composePoster } from "../lib/sharpCompose";
 import { createJob, updateJobStatus } from "../lib/jobStatus";
+import { uploadImageToCloudinary } from "../lib/cloudinaryUpload";
 
 export async function composePosterEndpoint(req, res) {
   const { backgroundUrl, headline, subhead, cta, footer, logoUrl, preview } = req.body;
@@ -16,9 +17,8 @@ export async function composePosterEndpoint(req, res) {
       preview,
     });
 
-    // Save printBuffer and socialBuffer to storage, get URLs
-    const printUrl = await saveImageToS3(printBuffer, job._id + "_print.png");
-    const socialUrl = await saveImageToS3(socialBuffer, job._id + "_social.png");
+    const printUrl = await uploadImageToCloudinary(printBuffer, `posters/${job._id}_print`);
+    const socialUrl = await uploadImageToCloudinary(socialBuffer, `posters/${job._id}_social`);
 
     await updateJobStatus(job._id, "done", { printUrl, socialUrl });
     res.json({ jobId: job._id, status: "done", printUrl, socialUrl });

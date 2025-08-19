@@ -1,9 +1,10 @@
 import { sdxlPrompts } from "../lib/sdxlPrompts";
 import { generateSDXLBackground } from "../lib/replicateClient";
 import { createJob, updateJobStatus } from "../lib/jobStatus";
+import { uploadImageToCloudinary } from "../lib/cloudinaryUpload";
 
 export async function generateBackground(req, res) {
-  const { style } = req.body; // e.g., "modern"
+  const { style } = req.body;
   const prompt = sdxlPrompts[style];
   if (!prompt) return res.status(400).json({ error: "Invalid style" });
 
@@ -11,8 +12,7 @@ export async function generateBackground(req, res) {
 
   try {
     const imageBuffer = await generateSDXLBackground(prompt);
-    // Save imageBuffer to storage (e.g., S3/local), get the URL
-    const imageUrl = await saveImageToS3(imageBuffer, job._id + ".png"); // implement saveImageToS3
+    const imageUrl = await uploadImageToCloudinary(imageBuffer, `backgrounds/${job._id}`);
 
     await updateJobStatus(job._id, "done", imageUrl);
 
